@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Admin – Duyệt Tour | VietTour Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | VietTour Guide</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
     :root {
@@ -17,6 +17,7 @@
       --error-hover: #dc2626;
       --error-light: #fee2e2;
       --warning: #f59e0b;
+      --warning-light: #fef3c7;
       --text-dark: #1f2937;
       --text-medium: #4b5563;
       --text-light: #6b7280;
@@ -135,6 +136,11 @@
       padding: 2rem 1rem;
     }
 
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
     .page-header {
       margin-bottom: 2rem;
     }
@@ -151,6 +157,7 @@
       font-size: 1rem;
     }
 
+    /* Dashboard Stats */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -192,12 +199,24 @@
     .table-header {
       padding: 1.5rem;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .table-title {
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary);
     }
 
     table {
@@ -225,40 +244,13 @@
       background-color: rgba(249, 250, 251, 0.5);
     }
 
-    .booking-id {
-      font-family: monospace;
-      font-size: 0.75rem;
-      background-color: var(--background);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      color: var(--text-medium);
-    }
-
     .user-name {
       font-weight: 500;
       color: var(--text-dark);
     }
 
-    .guide-name {
-      color: var(--primary);
-      font-weight: 500;
-    }
-
-    .location-name {
-      color: var(--text-dark);
-    }
-
-    .date-info {
+    .user-email {
       color: var(--text-medium);
-    }
-
-    .time-slot {
-      background-color: var(--primary-light);
-      color: var(--primary);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      font-weight: 500;
     }
 
     /* Button Styles */
@@ -354,7 +346,7 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Success/Error Messages */
+    /* Alert Styles */
     .alert {
       padding: 1rem;
       border-radius: 0.5rem;
@@ -420,7 +412,7 @@
         <nav class="nav">
           <a href="admin.html" class="nav-link">Dashboard</a>
           <a href="admin-upload.html" class="nav-link">Upload Tour</a>
-          <a href="admin-approve.html" class="nav-link active">Duyệt Tour</a>
+          <a href="admin-approve.html" class="nav-link active">Duyệt HDV</a>
           <div class="user-info">
             <span class="admin-badge">ADMIN</span>
             <span id="userName">Admin</span>
@@ -432,27 +424,11 @@
 
   <!-- Main Content -->
   <main>
-    <div class="container">
+    <div class="admin-container">
       <!-- Page Header -->
       <div class="page-header">
-        <h1 class="page-title">Duyệt Tour</h1>
-        <p class="page-description">Quản lý và phê duyệt các booking tour từ khách hàng</p>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value" id="pendingCount">-</div>
-          <div class="stat-label">Booking chờ duyệt</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="todayCount">-</div>
-          <div class="stat-label">Booking hôm nay</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="totalCount">-</div>
-          <div class="stat-label">Tổng booking</div>
-        </div>
+        <h1 class="page-title">Duyệt HDV</h1>
+        <p class="page-description">Quản lý và duyệt HDV</p>
       </div>
 
       <!-- Alert Container -->
@@ -461,7 +437,24 @@
       <!-- Table -->
       <div class="table-container">
         <div class="table-header">
-          <h2 class="table-title">Danh sách booking chờ duyệt</h2>
+          <h2 class="table-title">
+            <svg class="table-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Hồ sơ hướng dẫn viên chờ duyệt
+          </h2>
+          <button id="refreshBtn" class="btn btn-approve">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+              <path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Làm mới
+          </button>
         </div>
         
         <div id="loadingState" class="loading">
@@ -471,19 +464,15 @@
           Đang tải dữ liệu...
         </div>
 
-        <table id="bookingTable" style="display: none;">
+        <table id="guideTable" style="display: none;">
           <thead>
             <tr>
-              <th>Booking ID</th>
-              <th>Khách hàng</th>
-              <th>Hướng dẫn viên</th>
-              <th>Địa điểm</th>
-              <th>Ngày</th>
-              <th>Khung giờ</th>
+              <th>Tên</th>
+              <th>Email</th>
               <th>Hành động</th>
             </tr>
           </thead>
-          <tbody id="tbPending"></tbody>
+          <tbody id="tbody"></tbody>
         </table>
 
         <div id="emptyState" class="empty-state" style="display: none;">
@@ -491,8 +480,8 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          <h3 class="empty-title">Không có booking nào cần duyệt</h3>
-          <p class="empty-description">Tất cả booking đã được xử lý hoặc chưa có booking mới nào.</p>
+          <h3 class="empty-title">Không có hồ sơ nào cần duyệt</h3>
+          <p class="empty-description">Tất cả hồ sơ hướng dẫn viên đã được xử lý.</p>
         </div>
       </div>
     </div>
@@ -517,161 +506,193 @@
       }, 5000);
     }
 
-    // Update stats
-    function updateStats(bookings) {
-      document.getElementById('pendingCount').textContent = bookings.length;
-      
-      const today = new Date().toDateString();
-      const todayBookings = bookings.filter(b => new Date(b.date).toDateString() === today);
-      document.getElementById('todayCount').textContent = todayBookings.length;
-      
-      // This would typically come from another API call
-      document.getElementById('totalCount').textContent = bookings.length;
-    }
-
     (async () => {
       const token = localStorage.getItem('token');
+      const role = localStorage.getItem('userRole');
       const userName = localStorage.getItem('userName');
-      
-      if (!token) {
-        window.location.href = 'login.html';
-        return;
-      }
 
       // Set user name
       if (userName) {
         document.getElementById('userName').textContent = userName;
       }
 
-      const tb = document.getElementById('tbPending');
-      const loadingState = document.getElementById('loadingState');
-      const emptyState = document.getElementById('emptyState');
-      const bookingTable = document.getElementById('bookingTable');
-
-      try {
-        // 1. Lấy danh sách booking pending
-        const res = await fetch('http://localhost:4000/api/admin/bookings/pending', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        
-        if (!res.ok) {
-          throw new Error('Không thể tải dữ liệu');
-        }
-        
-        const list = await res.json();
-
-        // Hide loading
-        loadingState.style.display = 'none';
-
-        // Update stats
-        updateStats(list);
-
-        if (!Array.isArray(list) || !list.length) {
-          emptyState.style.display = 'block';
-          return;
-        }
-
-        // Show table
-        bookingTable.style.display = 'table';
-        tb.innerHTML = '';
-
-        // 2. Tạo hàng
-        list.forEach(b => {
-          const userName = b.user?.name || 'Unknown';
-          const guideName = b.guide?.user?.name || 'Chưa gán HDV';
-          const locName = b.location?.name || 'Unknown';
-          const date = new Date(b.date).toLocaleDateString('vi-VN');
-
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><span class="booking-id">${b._id}</span></td>
-            <td><span class="user-name">${userName}</span></td>
-            <td><span class="guide-name">${guideName}</span></td>
-            <td><span class="location-name">${locName}</span></td>
-            <td><span class="date-info">${date}</span></td>
-            <td><span class="time-slot">${b.timeSlot}</span></td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn btn-approve" data-id="${b._id}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                  Duyệt
-                </button>
-                <button class="btn btn-reject" data-id="${b._id}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                  </svg>
-                  Từ chối
-                </button>
-              </div>
-            </td>
-          `;
-          tb.appendChild(tr);
-        });
-
-        // 3. Bắt sự kiện Approve/Reject
-        tb.addEventListener('click', async e => {
-          if (!e.target.closest('.btn-approve, .btn-reject')) return;
-          
-          const button = e.target.closest('.btn-approve, .btn-reject');
-          const id = button.dataset.id;
-          const action = button.classList.contains('btn-approve') ? 'confirmed' : 'cancelled';
-          const actionText = action === 'confirmed' ? 'duyệt' : 'từ chối';
-
-          // Disable buttons
-          const allButtons = button.parentElement.querySelectorAll('.btn');
-          allButtons.forEach(btn => btn.disabled = true);
-
-          try {
-            const resp = await fetch(`http://localhost:4000/api/admin/bookings/${id}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              },
-              body: JSON.stringify({ status: action })
-            });
-
-            if (resp.ok) {
-              // Remove row with animation
-              const row = button.closest('tr');
-              row.style.opacity = '0.5';
-              row.style.transform = 'translateX(20px)';
-              
-              setTimeout(() => {
-                row.remove();
-                
-                // Update stats
-                const remainingRows = tb.querySelectorAll('tr').length;
-                document.getElementById('pendingCount').textContent = remainingRows;
-                
-                // Show empty state if no more bookings
-                if (remainingRows === 0) {
-                  bookingTable.style.display = 'none';
-                  emptyState.style.display = 'block';
-                }
-              }, 300);
-
-              showAlert(`Đã ${actionText} booking thành công!`, 'success');
-            } else {
-              const err = await resp.json();
-              throw new Error(err.message || `Không thể ${actionText} booking`);
-            }
-          } catch (error) {
-            // Re-enable buttons on error
-            allButtons.forEach(btn => btn.disabled = false);
-            showAlert(`Lỗi: ${error.message}`, 'error');
-          }
-        });
-
-      } catch (error) {
-        loadingState.style.display = 'none';
-        showAlert(`Lỗi tải dữ liệu: ${error.message}`, 'error');
+      // 1) Kiểm tra role admin
+      if (role !== 'admin' || !token) {
+        showAlert('Bạn không có quyền truy cập trang này', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
       }
+
+      // 2) Hàm gọi API an toàn
+      async function safeFetch(url, options = {}) {
+        options.headers = options.headers || {};
+        options.headers['Authorization'] = 'Bearer ' + token;
+        if (options.body && !(options.body instanceof FormData)) {
+          options.headers['Content-Type'] = 'application/json';
+        }
+        
+        try {
+          const res = await fetch(url, options);
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('token');
+            showAlert('Phiên làm việc đã hết hạn hoặc bạn không có quyền. Vui lòng đăng nhập lại.', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            throw new Error('Unauthorized or Forbidden');
+          }
+          return res;
+        } catch (error) {
+          showAlert(`Lỗi kết nối: ${error.message}`, 'error');
+          throw error;
+        }
+      }
+
+
+      // 4) Load danh sách pending guides
+      async function loadPending() {
+        const loadingState = document.getElementById('loadingState');
+        const emptyState = document.getElementById('emptyState');
+        const guideTable = document.getElementById('guideTable');
+        
+        try {
+          loadingState.style.display = 'flex';
+          guideTable.style.display = 'none';
+          emptyState.style.display = 'none';
+          
+          const res = await safeFetch('http://localhost:4000/api/admin/guides/pending');
+          const list = await res.json();
+          const tbody = document.getElementById('tbody');
+          tbody.innerHTML = '';
+
+          // Hide loading
+          loadingState.style.display = 'none';
+
+          if (!Array.isArray(list) || list.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+          }
+
+          // Show table
+          guideTable.style.display = 'table';
+
+          list.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><span class="user-name">${u.user?.name || '—'}</span></td>
+              <td><span class="user-email">${u.user?.email || '—'}</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-approve" onclick="approve('${u._id}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Duyệt
+                  </button>
+                  <button class="btn btn-reject" onclick="rejectGuide('${u._id}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="15" y1="9" x2="9" y2="15"></line>
+                      <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    Từ chối
+                  </button>
+                </div>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          
+        } catch (err) {
+          loadingState.style.display = 'none';
+          showAlert(`Lỗi tải dữ liệu: ${err.message}`, 'error');
+        }
+      }
+
+      // 5) Hàm approve / reject
+      window.approve = async (id) => {
+        try {
+          // Disable buttons for this row
+          const buttons = document.querySelectorAll(`button[onclick*="${id}"]`);
+          buttons.forEach(btn => btn.disabled = true);
+          
+          await safeFetch(`http://localhost:4000/api/admin/guides/approve/${id}`, { method: 'PATCH' });
+          
+          // Remove row with animation
+          const row = buttons[0].closest('tr');
+          row.style.opacity = '0.5';
+          row.style.transform = 'translateX(20px)';
+          
+          setTimeout(() => {
+            row.remove();
+            
+            // Check if table is empty
+            const tbody = document.getElementById('tbody');
+            if (tbody.children.length === 0) {
+              document.getElementById('guideTable').style.display = 'none';
+              document.getElementById('emptyState').style.display = 'block';
+            }
+            
+            // Update stats
+            const pendingCount = document.getElementById('pendingCount');
+            pendingCount.textContent = parseInt(pendingCount.textContent) - 1;
+          }, 300);
+          
+          showAlert('Đã duyệt hồ sơ hướng dẫn viên thành công!', 'success');
+        } catch (error) {
+          console.error('Error approving guide:', error);
+          showAlert('Lỗi khi duyệt hồ sơ', 'error');
+          
+          // Re-enable buttons
+          const buttons = document.querySelectorAll(`button[onclick*="${id}"]`);
+          buttons.forEach(btn => btn.disabled = false);
+        }
+      };
+
+      window.rejectGuide = async (id) => {
+        try {
+          // Disable buttons for this row
+          const buttons = document.querySelectorAll(`button[onclick*="${id}"]`);
+          buttons.forEach(btn => btn.disabled = true);
+          
+          await safeFetch(`http://localhost:4000/api/admin/guides/reject/${id}`, { method: 'PATCH' });
+          
+          // Remove row with animation
+          const row = buttons[0].closest('tr');
+          row.style.opacity = '0.5';
+          row.style.transform = 'translateX(20px)';
+          
+          setTimeout(() => {
+            row.remove();
+            
+            // Check if table is empty
+            const tbody = document.getElementById('tbody');
+            if (tbody.children.length === 0) {
+              document.getElementById('guideTable').style.display = 'none';
+              document.getElementById('emptyState').style.display = 'block';
+            }
+            
+          }, 300);
+          
+          showAlert('Đã từ chối hồ sơ hướng dẫn viên!', 'success');
+        } catch (error) {
+          console.error('Error rejecting guide:', error);
+          showAlert('Lỗi khi từ chối hồ sơ', 'error');
+          
+          // Re-enable buttons
+          const buttons = document.querySelectorAll(`button[onclick*="${id}"]`);
+          buttons.forEach(btn => btn.disabled = false);
+        }
+      };
+
+      // Refresh button
+      document.getElementById('refreshBtn').addEventListener('click', () => {
+        loadPending();
+        loadStats();
+      });
+
+      // Khởi chạy
+      await Promise.all([loadPending(), loadStats()]);
     })();
   </script>
 </body>
