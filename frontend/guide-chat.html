@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chat với khách hàng | VietTour Guide</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --error: #ef4444;
+      --error-light: #fee2e2;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --text-dark: #1f2937;
+      --text-medium: #4b5563;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+      --background: #f9fafb;
+      --white: #ffffff;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #eff6ff, #ffffff, #f0fdf4);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+    }
+
+    .nav-link {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-medium);
+    }
+
+    .guide-badge {
+      background-color: var(--success);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    main {
+      padding: 2rem 1rem;
+    }
+
+    .chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: calc(100vh - 200px);
+      min-height: 600px;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .page-description {
+      color: var(--text-medium);
+      font-size: 0.875rem;
+    }
+
+    /* Notifications */
+    .notifications-container {
+      margin-bottom: 1rem;
+    }
+
+    .notification {
+      background-color: var(--warning-light);
+      border: 1px solid var(--warning);
+      color: #92400e;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .notification:hover {
+      background-color: #fde68a;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .notification-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Chat Area */
+    .chat-area {
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background-color: var(--background);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chat-header-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary);
+    }
+
+    .chat-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .room-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      background-color: var(--primary-light);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      margin-left: auto;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .message.own {
+      align-items: flex-end;
+    }
+
+    .message.other {
+      align-items: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .message.own .message-bubble {
+      background-color: var(--primary);
+      color: white;
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    .message.other .message-bubble {
+      background-color: var(--white);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .message-sender {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin: 0 0.5rem;
+    }
+
+    /* Chat Input */
+    .chat-input-container {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background-color: var(--white);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      font-size: 0.875rem;
+      resize: none;
+      min-height: 2.5rem;
+      max-height: 6rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: var(--background);
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .send-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .send-button:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      transform: scale(1.05);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .send-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    /* Empty State */
+    .empty-chat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--text-light);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .empty-icon {
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-medium);
+    }
+
+    .empty-description {
+      font-size: 0.875rem;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--text-medium);
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Online Status */
+    .online-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--success);
+    }
+
+    .status-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .chat-container {
+        height: calc(100vh - 150px);
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .message-bubble {
+        max-width: 85%;
+      }
+      
+      .chat-input-container {
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span class="logo-text">VietTour Guide</span>
+        </a>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Trang chủ</a>
+          <a href="guide-chat.html" class="nav-link active">Chat</a>
+          <a href="guide-approve.html" class="nav-link">Booking</a>
+          <a href="#" class="nav-link">Hồ sơ</a>
+          <div class="user-info">
+            <span class="guide-badge">GUIDE</span>
+            <span id="userName">Hướng dẫn viên</span>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="chat-container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Chat với khách hàng</h1>
+        <p class="page-description">Trao đổi và hỗ trợ khách hàng trong các chuyến tour</p>
+        <div class="online-status">
+          <div class="status-dot"></div>
+          <span>Đang online</span>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="notifications-container" id="notifications"></div>
+
+      <!-- Chat Area -->
+      <div class="chat-area">
+        <div class="chat-header">
+          <svg class="chat-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span class="chat-title">Cuộc trò chuyện</span>
+          <span class="room-id" id="currentRoom">Chưa chọn phòng</span>
+        </div>
+
+        <div class="chat-messages" id="chatContainer">
+          <div class="empty-chat">
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3 class="empty-title">Chưa có tin nhắn</h3>
+            <p class="empty-description">Bắt đầu cuộc trò chuyện với khách hàng của bạn</p>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <textarea 
+            id="chatInput" 
+            class="chat-input" 
+            placeholder="Nhập tin nhắn..."
+            rows="1"
+          ></textarea>
+          <button id="sendBtn" class="send-button">
+            <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22,2 15,22 11,13 2,9"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      let roomId = params.get('roomId');
+      const guideId = localStorage.getItem('userId');
+      const guideName = localStorage.getItem('userName');
+      const token = localStorage.getItem('token');
+
+      // Set user name
+      if (guideName) {
+        document.getElementById('userName').textContent = guideName;
+      }
+
+      // Update current room display
+      function updateCurrentRoom() {
+        const roomDisplay = document.getElementById('currentRoom');
+        roomDisplay.textContent = roomId ? `Phòng ${roomId}` : 'Chưa chọn phòng';
+      }
+
+      const notifDiv = document.getElementById('notifications');
+      const chatContainer = document.getElementById('chatContainer');
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendBtn');
+
+      // Auto-resize textarea
+      input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+      });
+
+      // Send on Enter (but not Shift+Enter)
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // Socket
+      const socket = io('http://localhost:4000');
+      
+      if (roomId) {
+        socket.emit('joinRoom', { roomId });
+        updateCurrentRoom();
+      }
+
+      socket.on('chatMessage', ({ senderName, message, timestamp }) => {
+        appendMessage(senderName, message, timestamp, senderName === guideName);
+      });
+
+      // Notification: user gửi chat trong room khác
+      socket.on('newMessageNotification', ({ roomId: newRoom }) => {
+        if (newRoom !== roomId) {
+          // tránh duplicate
+          if (![...notifDiv.children].some(c => c.dataset.room === newRoom)) {
+            const div = document.createElement('div');
+            div.className = 'notification';
+            div.dataset.room = newRoom;
+            div.innerHTML = `
+              <svg class="notification-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Tin nhắn mới trong phòng ${newRoom}</span>
+            `;
+            div.onclick = () => {
+              roomId = newRoom;
+              notifDiv.innerHTML = '';
+              clearChat();
+              loadHistory();
+              socket.emit('joinRoom', { roomId });
+              updateCurrentRoom();
+            };
+            notifDiv.appendChild(div);
+          }
+        }
+      });
+
+      // Load lịch sử chat
+      async function loadHistory() {
+        if (!roomId) return;
+        
+        try {
+          showLoading();
+          const res = await fetch(`http://localhost:4000/api/chat/${roomId}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          
+          if (!res.ok) throw new Error('Không thể tải lịch sử chat');
+          
+          const history = await res.json();
+          clearChat();
+          
+          if (history.length === 0) {
+            showEmptyState();
+          } else {
+            history.forEach(h => {
+              appendMessage(h.senderName, h.message, h.timestamp, h.senderName === guideName);
+            });
+          }
+        } catch (error) {
+          console.error('Error loading chat history:', error);
+          showEmptyState();
+        }
+      }
+
+      function showLoading() {
+        chatContainer.innerHTML = `
+          <div class="loading">
+            <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+            Đang tải tin nhắn...
+          </div>
+        `;
+      }
+
+      function showEmptyState() {
+        chatContainer.innerHTML = `
+          <div class="empty-chat">
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3 class="empty-title">Chưa có tin nhắn</h3>
+            <p class="empty-description">Bắt đầu cuộc trò chuyện với khách hàng của bạn</p>
+          </div>
+        `;
+      }
+
+      function clearChat() {
+        chatContainer.innerHTML = '';
+      }
+
+      function appendMessage(sender, msg, timestamp, isOwn = false) {
+        // Remove empty state if it exists
+        const emptyState = chatContainer.querySelector('.empty-chat, .loading');
+        if (emptyState) {
+          emptyState.remove();
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
+        
+        const time = timestamp ? new Date(timestamp).toLocaleTimeString('vi-VN', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }) : new Date().toLocaleTimeString('vi-VN', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+
+        messageDiv.innerHTML = `
+          ${!isOwn ? `<div class="message-sender">${sender}</div>` : ''}
+          <div class="message-bubble">${msg}</div>
+          <div class="message-time">${time}</div>
+        `;
+        
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      function sendMessage() {
+        const msg = input.value.trim();
+        if (!msg || !roomId) return;
+
+        socket.emit('chatMessage', {
+          roomId, 
+          senderId: guideId, 
+          senderName: guideName, 
+          message: msg
+        });
+        
+        input.value = '';
+        input.style.height = 'auto';
+      }
+
+      sendBtn.addEventListener('click', sendMessage);
+
+      // Khởi tạo
+      updateCurrentRoom();
+      if (roomId) {
+        loadHistory();
+      } else {
+        showEmptyState();
+      }
+    })();
+  </script>
+</body>
+</html>

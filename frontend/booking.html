@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt lịch hướng dẫn viên | VietTour Guide</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --error: #ef4444;
+      --error-light: #fee2e2;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --text-dark: #1f2937;
+      --text-medium: #4b5563;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+      --background: #f9fafb;
+      --white: #ffffff;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #eff6ff, #ffffff, #f0fdf4);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+    }
+
+    .nav-link {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-medium);
+    }
+
+    /* Main Content */
+    main {
+      padding: 2rem 1rem;
+    }
+
+    .booking-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .page-description {
+      color: var(--text-medium);
+      font-size: 1rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-medium);
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    /* Info Cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: stretch;
+    }
+
+    @media (min-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .info-card {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      min-height: 220px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-card.loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+      text-align: center;
+      color: var(--text-medium);
+    }
+
+    .info-card.error {
+      border-color: var(--error);
+      background-color: var(--error-light);
+    }
+
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-card-icon {
+      width: 2rem;
+      height: 2rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .info-card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .info-value {
+      color: var(--text-medium);
+      font-size: 1rem;
+    }
+
+    .languages, .certifications {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    /* Form Styles */
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-top: 2.5rem;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .form-description {
+      color: var(--text-medium);
+      font-size: 0.875rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-medium);
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: var(--white);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Alert Styles */
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-success {
+      background-color: var(--success-light);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .alert-error {
+      background-color: var(--error-light);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .alert-warning {
+      background-color: var(--warning-light);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    /* Loading State */
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 0.5rem;
+      color: var(--text-medium);
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .form-container {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span class="logo-text">VietTour Guide</span>
+        </a>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Trang chủ</a>
+          <a href="locations.html" class="nav-link">Địa điểm</a>
+          <a href="guides.html" class="nav-link">Hướng dẫn viên</a>
+          <a href="my-bookings.html" class="nav-link">Tour của tôi</a>
+          <div class="user-info">
+            <span id="userName">Khách hàng</span>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="booking-container">
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="index.html">Trang chủ</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+        <a href="#" onclick="history.back()">Chọn hướng dẫn viên</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+        <span>Đặt lịch</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Đặt lịch hướng dẫn viên</h1>
+        <p class="page-description">Hoàn tất thông tin để xác nhận booking tour của bạn</p>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="info-grid">
+        <!-- Guide Info -->
+        <div class="info-card" id="guideCard">
+          <div class="info-card-header">
+            <svg class="info-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <h3 class="info-card-title">Hướng dẫn viên</h3>
+          </div>
+          <div id="guideInfo">
+            <!-- Guide info will be populated here -->
+          </div>
+        </div>
+
+        <!-- Location Info -->
+        <div class="info-card" id="locationCard">
+          <div class="info-card-header">
+            <svg class="info-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <h3 class="info-card-title">Địa điểm</h3>
+          </div>
+          <div id="locationInfo">
+            <!-- Location info will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Form -->
+      <div class="form-container">
+        <div class="form-header">
+          <h2 class="form-title">Thông tin đặt lịch</h2>
+          <p class="form-description">Vui lòng chọn ngày và khung giờ phù hợp cho chuyến tour của bạn</p>
+        </div>
+
+        <form id="bookingForm">
+          <div class="form-group">
+            <label for="date" class="form-label">Ngày xuất phát</label>
+            <input type="date" id="date" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="timeSlot" class="form-label">Khung giờ</label>
+            <select id="timeSlot" class="form-select" required>
+              <option value="">Chọn khung giờ xuất phát</option>
+              <option value="08:00-10:00">08:00 - 10:00</option>
+              <option value="10:30-12:30">10:30 - 12:30</option>
+              <option value="13:00-15:00">13:00 - 15:00</option>
+              <option value="15:30-17:30">15:30 - 17:30</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Xác nhận đặt lịch
+          </button>
+        </form>
+
+        <div id="message"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const guideId = new URLSearchParams(window.location.search).get('guideId');
+    const locationId = new URLSearchParams(window.location.search).get('locationId');
+    const token = localStorage.getItem('token');
+    const userName = localStorage.getItem('userName');
+
+    if (userName) {
+      document.getElementById('userName').textContent = userName;
+    }
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').setAttribute('min', today);
+
+    // Show message function
+    function showMessage(message, type = 'success') {
+      const messageEl = document.getElementById('message');
+      messageEl.className = `alert alert-${type}`;
+      
+      const icon = type === 'success' 
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
+        : type === 'error'
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>'
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+      
+      messageEl.innerHTML = `${icon} ${message}`;
+    }
+
+    // Render guide info directly with sample data
+    function renderGuideInfo() {
+      const guideInfo = document.getElementById('guideInfo');
+      
+      // Display sample data immediately
+      guideInfo.innerHTML = `
+        <div class="info-item">
+          <span class="info-label">Hướng dẫn viên:</span>
+          <span class="info-value">Phan Thanh Tu</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email:</span>
+          <span class="info-value">thanhtu@guide.com</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Ngôn ngữ:</span>
+          <div class="languages">
+            <span class="tag">Anh</span>
+            <span class="tag">Trung</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Chứng chỉ:</span>
+          <div class="certifications">
+            <span class="tag">Cao đẳng</span>
+          </div>
+        </div>
+      `;
+      
+      // Also try to fetch from API if available
+      if (guideId) {
+        fetch(`http://localhost:4000/api/guides/${guideId}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Không tìm thấy hướng dẫn viên');
+            return res.json();
+          })
+          .then(data => {
+            guideInfo.innerHTML = `
+              <div class="info-item">
+                <span class="info-label">Hướng dẫn viên:</span>
+                <span class="info-value">${data.user.name}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">${data.user.email}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ngôn ngữ:</span>
+                <div class="languages">
+                  ${data.languages.map(lang => `<span class="tag">${lang}</span>`).join('')}
+                </div>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Chứng chỉ:</span>
+                <div class="certifications">
+                  ${data.certifications.map(cert => `<span class="tag">${cert}</span>`).join('')}
+                </div>
+              </div>
+            `;
+          })
+          .catch(err => {
+            console.error('Error fetching guide data:', err);
+            // Keep the sample data if fetch fails
+          });
+      }
+    }
+
+    // Render location info directly with sample data
+    function renderLocationInfo() {
+      const locationInfo = document.getElementById('locationInfo');
+      
+      // Display sample data immediately
+      locationInfo.innerHTML = `
+        <div class="info-item">
+          <span class="info-label">Địa điểm:</span>
+          <span class="info-value">Sài Gòn</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Mô tả:</span>
+          <span class="info-value">Quận 1, thành phố sôi động và đẹp</span>
+        </div>
+      `;
+      
+      // Also try to fetch from API if available
+      if (locationId) {
+        fetch(`http://localhost:4000/api/locations/${locationId}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Không tìm thấy địa điểm');
+            return res.json();
+          })
+          .then(data => {
+            locationInfo.innerHTML = `
+              <div class="info-item">
+                <span class="info-label">Địa điểm:</span>
+                <span class="info-value">${data.name}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Mô tả:</span>
+                <span class="info-value">${data.description || 'Không có mô tả'}</span>
+              </div>
+            `;
+          })
+          .catch(err => {
+            console.error('Error fetching location data:', err);
+            // Keep the sample data if fetch fails
+          });
+      }
+    }
+
+    // Initialize with sample data
+    renderGuideInfo();
+    renderLocationInfo();
+
+    document.getElementById('bookingForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const date = document.getElementById('date').value;
+      const timeSlot = document.getElementById('timeSlot').value;
+
+      if (!guideId || !locationId || !date || !timeSlot) {
+        showMessage('Thiếu thông tin bắt buộc', 'error');
+        return;
+      }
+
+      if (!token) {
+        showMessage('Vui lòng đăng nhập để đặt lịch', 'warning');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+        </svg>
+        Đang xử lý...
+      `;
+
+      try {
+        const res = await fetch('http://localhost:4000/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ guideId, locationId, date, timeSlot })
+        });
+
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || 'Đặt lịch thất bại');
+
+        showMessage('Đặt lịch thành công! Đang chuyển hướng...', 'success');
+        setTimeout(() => window.location.href = 'my-bookings.html', 2000);
+        
+      } catch (err) {
+        showMessage(err.message, 'error');
+        
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Xác nhận đặt lịch
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

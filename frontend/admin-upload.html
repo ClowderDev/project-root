@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin – Quản lý Guide | VietTour Guide</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --success-hover: #059669;
+      --success-light: #d1fae5;
+      --error: #ef4444;
+      --error-hover: #dc2626;
+      --error-light: #fee2e2;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --text-dark: #1f2937;
+      --text-medium: #4b5563;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+      --background: #f9fafb;
+      --white: #ffffff;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #eff6ff, #ffffff, #f0fdf4);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+    }
+
+    .nav-link {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-medium);
+    }
+
+    .admin-badge {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    main {
+      padding: 2rem 1rem;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .page-description {
+      color: var(--text-medium);
+      font-size: 1rem;
+    }
+
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-icon {
+      width: 2rem;
+      height: 2rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid.two-cols {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-medium);
+    }
+
+    .form-input, .form-textarea, .form-select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: var(--white);
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .form-select[multiple] {
+      min-height: 150px;
+    }
+
+    /* File Upload Styles */
+    .file-upload {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--border);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      transition: border-color 0.2s, background-color 0.2s;
+      cursor: pointer;
+      background-color: var(--background);
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .file-upload.dragover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .file-upload-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-upload-icon {
+      width: 3rem;
+      height: 3rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .file-upload-text {
+      text-align: center;
+      color: var(--text-medium);
+    }
+
+    .file-upload-title {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .file-upload-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .file-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--background);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      border: 1px solid var(--border);
+    }
+
+    .file-remove {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      transition: background-color 0.2s;
+    }
+
+    .file-remove:hover {
+      background-color: var(--error-light);
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      gap: 0.5rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background-color: var(--success-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Alert Styles */
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-success {
+      background-color: var(--success-light);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .alert-error {
+      background-color: var(--error-light);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .alert-warning {
+      background-color: var(--warning-light);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    /* Loading States */
+    .loading-option {
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .form-card {
+        padding: 1.5rem;
+      }
+      
+      .form-grid.two-cols {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span class="logo-text">VietTour Guide</span>
+        </a>
+        <nav class="nav">
+          <a href="admin.html" class="nav-link">Dashboard</a>
+          <a href="admin-upload.html" class="nav-link active">Upload Tour</a>
+          <a href="admin-approve.html" class="nav-link">Duyệt Tour</a>
+          <div class="user-info">
+            <span class="admin-badge">ADMIN</span>
+            <span id="userName">Admin</span>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="admin-container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Quản lý Tour Guide</h1>
+        <p class="page-description">Tạo địa điểm mới và gán hướng dẫn viên cho các tour</p>
+      </div>
+
+      <!-- Section 1: Create Location -->
+      <div class="form-section">
+        <div class="section-header">
+          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <h2 class="section-title">Tạo mới Địa điểm</h2>
+        </div>
+
+        <div class="form-card">
+          <form id="locationForm">
+            <div class="form-grid two-cols">
+              <div class="form-group">
+                <label class="form-label" for="locName">Tên địa điểm *</label>
+                <input type="text" id="locName" class="form-input" required placeholder="Nhập tên địa điểm">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="locCategory">Danh mục</label>
+                <input type="text" id="locCategory" class="form-input" placeholder="Ví dụ: Lịch sử, Thiên nhiên">
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="locPrice">Giá</label>
+                <input type="number" id="locPrice" class="form-input" required placeholder="Nhập giá địa điểm">
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="locDesc">Mô tả</label>
+                <textarea id="locDesc" class="form-textarea" rows="4" placeholder="Mô tả chi tiết về địa điểm..."></textarea>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">Hình ảnh</label>
+                <div class="file-upload" id="fileUpload">
+                  <input type="file" id="locImages" class="file-upload-input" name="images" multiple accept="image/*">
+                  <svg class="file-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21,15 16,10 5,21"></polyline>
+                  </svg>
+                  <div class="file-upload-text">
+                    <div class="file-upload-title">Kéo thả hoặc click để chọn ảnh</div>
+                    <div class="file-upload-subtitle">PNG, JPG, GIF tối đa 10MB mỗi file</div>
+                  </div>
+                </div>
+                <div class="file-list" id="fileList"></div>
+              </div>
+            </div>
+
+            <button type="submit" id="locationSubmit" class="btn btn-primary btn-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              Tạo Địa điểm
+            </button>
+
+            <div id="locMsg"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Section 2: Assign Guides -->
+      <div class="form-section">
+        <div class="section-header">
+          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <h2 class="section-title">Gán Hướng dẫn viên</h2>
+        </div>
+
+        <div class="form-card">
+          <form id="assignForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="selLocation">Chọn Địa điểm *</label>
+                <select id="selLocation" class="form-select" required>
+                  <option value="" class="loading-option">-- đang tải địa điểm --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selGuides">Chọn Hướng dẫn viên *</label>
+                <select id="selGuides" class="form-select" multiple size="6" required>
+                  <option class="loading-option">-- đang tải hướng dẫn viên --</option>
+                </select>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.5rem;">
+                  Giữ Ctrl (Windows) hoặc Cmd (Mac) để chọn nhiều hướng dẫn viên
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="assignSubmit" class="btn btn-success btn-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Gán Guides
+            </button>
+
+            <div id="assignMsg"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const userName = localStorage.getItem('userName');
+
+    // Set user name
+    if (userName) {
+      document.getElementById('userName').textContent = userName;
+    }
+
+    // Check authentication
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    // File upload handling
+    const fileUpload = document.getElementById('fileUpload');
+    const fileInput = document.getElementById('locImages');
+    const fileList = document.getElementById('fileList');
+    let selectedFiles = [];
+
+    // Drag and drop functionality
+    fileUpload.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUpload.classList.add('dragover');
+    });
+
+    fileUpload.addEventListener('dragleave', () => {
+      fileUpload.classList.remove('dragover');
+    });
+
+    fileUpload.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUpload.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+      addFiles(files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      addFiles(files);
+    });
+
+    function addFiles(files) {
+      selectedFiles = [...selectedFiles, ...files];
+      updateFileList();
+    }
+
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      updateFileList();
+    }
+
+    function updateFileList() {
+      fileList.innerHTML = '';
+      selectedFiles.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21,15 16,10 5,21"></polyline>
+          </svg>
+          <span>${file.name}</span>
+          <button type="button" class="file-remove" onclick="removeFile(${index})">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        `;
+        fileList.appendChild(fileItem);
+      });
+    }
+
+    // Make removeFile global
+    window.removeFile = removeFile;
+
+    // Show message function
+    function showMessage(elementId, message, type = 'success') {
+      const messageEl = document.getElementById(elementId);
+      messageEl.className = `alert alert-${type}`;
+      
+      const icon = type === 'success' 
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+      
+      messageEl.innerHTML = `${icon} ${message}`;
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        messageEl.innerHTML = '';
+        messageEl.className = '';
+      }, 5000);
+    }
+
+    // 1. Create Location Form
+    document.getElementById('locationForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('locationSubmit');
+      const fd = new FormData();
+
+      fd.append('name', document.getElementById('locName').value);
+      fd.append('description', document.getElementById('locDesc').value);
+      fd.append('category', document.getElementById('locCategory').value);
+      fd.append('price', document.getElementById('locPrice').value);
+
+      // Add selected files
+      selectedFiles.forEach(file => {
+        fd.append('images', file);
+      });
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+        </svg>
+        Đang tạo...
+      `;
+
+      try {
+        const res = await fetch('http://localhost:4000/api/locations', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+          body: fd
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Lỗi tạo địa điểm');
+
+        showMessage('locMsg', 'Tạo địa điểm thành công!', 'success');
+        document.getElementById('locationForm').reset();
+        selectedFiles = [];
+        updateFileList();
+        await loadLocations();
+        
+      } catch (err) {
+        showMessage('locMsg', err.message, 'error');
+      } finally {
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Tạo Địa điểm
+        `;
+      }
+    });
+
+    // 2. Assign Guides Form
+    document.getElementById('assignForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('assignSubmit');
+      const locId = document.getElementById('selLocation').value;
+      const selected = Array.from(document.getElementById('selGuides').selectedOptions)
+                            .map(o => o.value);
+
+      if (!selected.length) {
+        showMessage('assignMsg', 'Vui lòng chọn ít nhất một hướng dẫn viên', 'error');
+        return;
+      }
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+        </svg>
+        Đang gán...
+      `;
+
+      try {
+        await Promise.all(selected.map(async guideId => {
+          const response = await fetch(`http://localhost:4000/api/guides/${guideId}/assign-location`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ locationId: locId })
+          });
+          
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Lỗi gán hướng dẫn viên');
+          }
+        }));
+
+        showMessage('assignMsg', `Đã gán thành công ${selected.length} hướng dẫn viên!`, 'success');
+        document.getElementById('assignForm').reset();
+        
+      } catch(err) {
+        showMessage('assignMsg', err.message, 'error');
+      } finally {
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Gán Guides
+        `;
+      }
+    });
+
+    // Load Locations
+    async function loadLocations() {
+      const sel = document.getElementById('selLocation');
+      sel.innerHTML = `<option value="">-- chọn địa điểm --</option>`;
+      
+      try {
+        const res = await fetch('http://localhost:4000/api/locations', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        
+        if (!res.ok) throw new Error('Không thể tải danh sách địa điểm');
+        
+        const list = await res.json();
+        list.forEach(l => {
+          const o = document.createElement('option');
+          o.value = l._id;
+          o.textContent = l.name;
+          sel.appendChild(o);
+        });
+        
+        if (!list.length) {
+          const o = document.createElement('option');
+          o.textContent = '-- Chưa có địa điểm nào --';
+          o.disabled = true;
+          sel.appendChild(o);
+        }
+      } catch (error) {
+        const o = document.createElement('option');
+        o.textContent = '-- Lỗi tải dữ liệu --';
+        o.disabled = true;
+        sel.appendChild(o);
+      }
+    }
+
+    // Load Guides
+    async function loadGuides() {
+      const sel = document.getElementById('selGuides');
+      sel.innerHTML = '';
+      
+      try {
+        const res = await fetch('http://localhost:4000/api/guides', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        
+        if (!res.ok) throw new Error('Không thể tải danh sách hướng dẫn viên');
+        
+        const list = await res.json();
+        const validGuides = list.filter(g => g.user);
+        
+        validGuides.forEach(g => {
+          const o = document.createElement('option');
+          o.value = g._id;
+          o.textContent = `${g.user.name} (${g.user.email})`;
+          sel.appendChild(o);
+        });
+
+        if (!validGuides.length) {
+          const o = document.createElement('option');
+          o.textContent = '-- Chưa có hướng dẫn viên --';
+          o.disabled = true;
+          sel.appendChild(o);
+        }
+      } catch (error) {
+        const o = document.createElement('option');
+        o.textContent = '-- Lỗi tải dữ liệu --';
+        o.disabled = true;
+        sel.appendChild(o);
+      }
+    }
+
+    // Initialize
+    (async () => {
+      await Promise.all([loadLocations(), loadGuides()]);
+    })();
+  </script>
+</body>
+</html>
