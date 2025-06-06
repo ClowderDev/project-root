@@ -514,8 +514,12 @@
     }
 
     // Update stats
-    function updateStats(bookings) {
+    function updateStatsPending(bookings) {
       document.getElementById('pendingCount').textContent = bookings.length;
+      
+    }
+    
+    function updateStatsToday(bookings) {
       
       const today = new Date().toDateString();
       const todayBookings = bookings.filter(b => new Date(b.date).toDateString() === today);
@@ -543,7 +547,7 @@
 
       try {
         // 1. Lấy danh sách booking pending
-          const res = await fetch('http://localhost:4000/api/tour/bookings', {
+          const res = await fetch('http://localhost:4000/api/tour/bookings/pending', {
             headers: { 'Authorization': 'Bearer ' + token }
           });
         
@@ -553,13 +557,21 @@
           throw new Error('Không thể tải dữ liệu');
         }
         
+        const resToday = await fetch('http://localhost:4000/api/tour/bookings', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+        
+        const listToday = await resToday.json();
+
         const list = await res.json();
 
         // Hide loading
         loadingState.style.display = 'none';
 
+        updateStatsPending(list);
+
         // Update stats
-        updateStats(list);
+        updateStatsToday(listToday);
 
         if (!Array.isArray(list) || !list.length) {
           emptyState.style.display = 'block';

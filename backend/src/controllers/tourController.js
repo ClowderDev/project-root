@@ -1,28 +1,41 @@
 const Booking = require('../models/Booking');
 const mongoose = require('mongoose');
+const GuideProfile = require('../models/GuideProfile');
 
+
+exports.getAllBookingsToday = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const guideProfile = await GuideProfile.findOne({ user: userId });
+    if (!guideProfile) {
+      return res.status(404).json({ message: 'Không tìm thấy hồ sơ hướng dẫn viên' });
+    }
+    
+    const bookings = await Booking.find({ guide: guideProfile._id})
+    .populate('user', 'name')
+    .populate('location', 'name');
+    
+    res.json(bookings);
+  } catch (err) {
+      next(err);
+  }
+};
 
 exports.getPendingBookings = async (req, res, next) => {
     try {
-        const guideId = req.user.id;
-        const list = await Booking.find({guide:guideId, status:'pending'})
-            .populate('user', 'name')
-            .populate('location', 'name');
-        res.json(list);
-    } catch (err) {
-        next(err);
-    }
-};
+      const userId = req.user.id;
 
-exports.getAllBookings = async (req, res, next) => {
-    try {
-        const guideIdString = req.user.id;
-        const guideId = mongoose.Types.ObjectId(guideIdString);
-        console.log("Đây là guideId: ",guideId);
-        const list = await Booking.find({guide: guideId })
-            .populate('user', 'name')
-            .populate('location', 'name');
-        res.json(list);
+      const guideProfile = await GuideProfile.findOne({ user: userId });
+      if (!guideProfile) {
+        return res.status(404).json({ message: 'Không tìm thấy hồ sơ hướng dẫn viên' });
+      }
+      
+      const bookings = await Booking.find({ guide: guideProfile._id, status: 'pending' })
+      .populate('user', 'name')
+      .populate('location', 'name');
+      
+      res.json(bookings);
     } catch (err) {
         next(err);
     }
